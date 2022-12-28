@@ -10,7 +10,7 @@
     "prepublishOnly": "npm run build",
     "lint": "eslint nightwatch tests",
     "test:nightwatch:serve": "serve --listen 13370 ./test-app",
-    "test": "nightwatch --serial --headless",
+    "test": "nightwatch --serial --headless --verbose",
     "validate": "kcd-scripts validate build,lint,test",
     "semantic-release": "semantic-release"
   },
