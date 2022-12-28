@@ -1,4 +1,4 @@
-name: @nightwatch/testing-library
+name: nightwatch testing-library plugin
 on:
   push:
     branches: [ main]
