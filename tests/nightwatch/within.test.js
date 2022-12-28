@@ -10,7 +10,7 @@ describe('within tests', function () {
     await browser.expect.element(button).text.to.equal('Button Clicked');
   });
 
-  xit('works with nested selector from "All" query with index - regex', async browser => {
+  it('works with nested selector from "All" query with index - regex', async browser => {
     const nestedDivs = await browser.getAllByTestId(/nested/);
 
     await browser.expect(nestedDivs).to.have.length(2)
