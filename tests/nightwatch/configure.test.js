@@ -9,8 +9,9 @@ describe('configure test', function () {
 
   it('supports alternative testIdAttribute', async (browser) => {
     const image = await browser.getByTestId('image-with-random-alt-tag');
-    browser.click(image);
-    browser.expect.element(image).to.have.css('border').which.equals('5px solid rgb(255, 0, 0)')
+
+    await browser.click(image);
+    await browser.expect.element(image).to.have.css('border').which.equals('5px solid rgb(255, 0, 0)')
   });
 
   it('still works after navigation', async (browser) => {
