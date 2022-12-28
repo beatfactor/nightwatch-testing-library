@@ -16,7 +16,7 @@ module.exports = {
     waitOn({
       resources: [`http://localhost:${serverPort}`]
     }).then(() => {
-      setTimeout(done, 1500);
+      setTimeout(done, 500);
     });
 
   },
