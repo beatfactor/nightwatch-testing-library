@@ -1,15 +1,8 @@
-<div align="center">
-<h1>nightwatch-testing-library</h1>
-<a href="https://www.emojione.com/emoji/bat">
-<img height="100" width="100" alt="ox" src="https://raw.githubusercontent.com/testing-library/nightwatch-testing-library/main/other/bat.png" />
+# @nightwatch/testing-library
 
-</a>
+Using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro) in Nightwatch has never been easier with the official Nightwatch plugin.
 
-<p>nightwatch selectors and utilities that encourage good testing practices laid down by dom-testing-library.</p>
-
-[**Read the docs**](https://testing-library.com/docs/nightwatch-testing-library/intro) | [Edit the docs](https://github.com/alexkrolick/testing-library-docs)
-
-</div>
+Requires Nightwatch 2.6.0 or higher.
 
 <hr />
 
@@ -19,7 +12,6 @@
 [![MIT License][license-badge]][license]
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=testing-library/nightwatch-testing-library)](https://dependabot.com)
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
 [![PRs Welcome][prs-badge]][prs]
 [![Code of Conduct][coc-badge]][coc]
@@ -35,22 +27,11 @@
 </a>
 </div>
 
-## The problem
-
-You want to use [dom-testing-library](https://github.com/kentcdodds/dom-testing-library) methods in your [nightwatch][nightwatch] tests.
-
-## This solution
-
-This allows you to use all the useful [dom-testing-library](https://github.com/kentcdodds/dom-testing-library) methods in your tests.
-
-## Table of Contents
-
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Other Solutions](#other-solutions)
 - [Contributors](#contributors)
 - [LICENSE](#license)
 
@@ -58,21 +39,174 @@ This allows you to use all the useful [dom-testing-library](https://github.com/k
 
 ## Installation
 
-This module is distributed via [npm][npm] which is bundled with [node][node] and
-should be installed as one of your project's `devDependencies`:
+Install the project from NPM with:
 
+```sh
+npm i nightwatch @nightwatch/testing-library --save-dev
 ```
-npm install --save-dev @testing-library/nightwatch
+
+Edit your `nightwatch.json` (or `nightwatch.conf.js`) file and add the plugin to the list:
+
+```json
+{
+  "plugins": [
+    "@nightwatch/testing-library"      
+  ]
+}
 ```
 
 ## Usage
 
-[Usage Docs](https://testing-library.com/docs/nightwatch-testing-library/intro#usage)
+Once the plugin is installed, you can use the `TestingLibrary` queries in your tests as regular Nightwatch commands.
 
-## Other Solutions
+The complete list of queries is available on the [DOM Testing Library documentation](https://testing-library.com/docs/queries/about).
 
-I'm not aware of any, if you are please [make a pull request][prs] and add it
-here!
+### getByText
+
+```js
+it('getByText example', async function(browser) {
+  const button = await browser.getByText('Unique Button Text');
+
+  browser.click(button);
+  browser.expect.element(button).text.to.equal('Button Clicked');
+});
+```
+
+### getByPlaceholderText
+
+```js
+it('getByPlaceholderText example', async function(browser) {
+  const input = await browser.getByPlaceholderText('Placeholder Text');
+
+  // Uses the User Actions API to type into the input
+  const webElement = await input.getWebElement();
+  await browser.actions().sendKeys(webElement, 'Hello Placeholder').perform();
+
+  await browser.expect.element(input).property('value').to.equal('Hello Placeholder');
+});
+```
+
+### getByLabelText
+    
+```js
+it('getByLabelText example', async function(browser) {
+  const input = await browser.getByLabelText('Label For Input Labelled By Id');
+  browser.sendKeys(input, 'Hello Input Labelled by Id');
+
+  browser.expect.element(input).value.toEqual('Hello Input Labelled by Id');
+});
+```
+
+### getByAltText
+
+```js
+it('getByAltText example', async function(browser) {
+  const image = await browser.getByAltText('Image Alt Text');
+
+  browser.expect.element(image).to.be.present;
+});
+```
+
+### getByTestId
+
+```js
+it('getByTestId example', async function(browser) {
+  const button = await browser.getByTestId('unique-button-id');
+
+  browser.click(button);
+  browser.expect.element(button).text.to.equal('Button Clicked');
+});
+```
+
+### getAllByText
+    
+```js
+it('getAllByText example', async function(browser) {
+  const chans = await browser.getAllByText('Jackie Chan', {exact: false});
+  browser.expect(chans).to.have.length(2);
+});
+```
+
+### getAllByText with regex
+
+```js
+it('getAllByText with regex example', async function(browser) {
+  const chans = await browser.getAllByText(/Jackie Chan/)
+  browser.expect(chans).to.have.length(2);
+});
+```
+
+### queryAllByText
+
+```js
+it('queryAllByText', async function (browser) {
+  const buttons = await browser.queryAllByText('Button Text');
+  const nonExistentButtons = await browser.queryAllByText('non existent button');
+
+  browser.expect(buttons).to.have.length(2);
+  browser.expect(nonExistentButtons).to.have.length(0);
+});
+```
+
+### using .within
+
+```js
+it('getByText within container', async browser => {
+  const nested = await browser.getByTestId('nested');
+  const button = await browser.within(nested).getByText('Button Text');
+
+  await browser.click(button);
+  await browser.expect.element(button).text.to.equal('Button Clicked');
+});
+```
+
+```js
+it('using nested selector from "All" query with index - regex', async browser => {
+  const nestedDivs = await browser.getAllByTestId(/nested/);
+
+  await browser.expect(nestedDivs).to.have.length(2)
+
+  const nested = browser.within(nestedDivs[1]);
+  const button = await nested.getByText('Button Text');
+  const text = await nested.getByText('text only in 2nd nested');
+
+  await browser.expect.element(button).to.be.present;
+  await browser.expect.element(text).to.be.present;
+});
+```
+
+### Configure testIdAttribute
+
+The `testIdAttribute` can be configured to use a different attribute for the `getByTestId` query
+
+1) In your `nightwatch.json` (or `nightwatch.conf.js`) file:
+
+```json
+{
+  "testing_library": {
+    "testIdAttribute": "data-automation-id"
+  }
+}
+```
+
+2) In your test file:
+
+```js
+describe('configure test', function () {
+
+  this.settings.testing_library = {
+    testIdAttribute: 'data-automation-id'
+  };
+
+  beforeEach(browser => browser.url('http://localhost:13370'));
+
+  it('supports alternative test Id attribute', async (browser) => {
+    const image = await browser.getByTestId('image-with-random-alt-tag');
+    browser.click(image);
+    browser.expect.element(image).to.have.css('border').which.equals('5px solid rgb(255, 0, 0)')
+  });
+});
+```
 
 ## Contributors
 

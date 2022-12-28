@@ -1,124 +1,92 @@
-const { getQueriesFrom } = require('../../src');
+describe('queries tests', function() {
 
-module.exports = {
+  beforeEach(function(browser) {
+    browser.url('http://localhost:13370');
+  });
 
-    beforeEach(browser, done) {
-        browser
-            .url('http://localhost:13370');
-        done()
-    },
+  it('Button click works', async function(browser) {
+    const button = await browser.getByText('Unique Button Text');
 
-    async 'Button click works'(browser) {
-        const { getByText } = getQueriesFrom(browser);
-        const button = await getByText('Unique Button Text');
+    await browser.expect.element(button).text.not.to.equal('Button Clicked')
+    await browser.click(button);
+    await browser.expect.element(button).text.to.equal('Button Clicked')
+  });
 
+  it('getByPlaceholderText', async function (browser) {
 
-        browser.expect.element(button).text.not.to.equal('Button Clicked')
+    const input = await browser.getByPlaceholderText('Placeholder Text');
+    await browser.expect.element(input).property('value').not.to.equal('Hello Placeholder');
 
-        browser.click(button);
+    const webElement = await input.getWebElement();
 
-        browser.expect.element(button).text.to.equal('Button Clicked')
+    // // Uses the User Actions API to type into the input
+    await browser.actions().sendKeys(webElement, 'Hello Placeholder').perform();
 
-    },
-
-    async 'getByPlaceholderText'(browser) {
-
-        const { getByPlaceholderText } = getQueriesFrom(browser);
-        const input = await getByPlaceholderText('Placeholder Text');
-
-        browser.expect.element(input).value.not.to.equal('Hello Placeholder');
-        browser.setValue(input, 'Hello Placeholder');
-
-        browser.expect.element(input).value.to.equal('Hello Placeholder');
-
-    },
+    await browser.expect.element(input).property('value').to.equal('Hello Placeholder');
+  });
 
 
-    async 'getByLabelText'(browser) {
-        const { getByLabelText } = getQueriesFrom(browser);
-        const input = await getByLabelText('Label For Input Labelled By Id');
-        browser.setValue(input, 'Hello Input Labelled by Id');
+  it('getByLabelText', async function (browser) {
+    const input = await browser.getByLabelText('Label For Input Labelled By Id');
+    browser.sendKeys(input, 'Hello Input Labelled by Id');
 
-        browser.expect.element(input).value.to.equal('Hello Input Labelled by Id');
+    browser.expect.element(input).value.toEqual('Hello Input Labelled by Id');
+  });
 
-    },
+  it('getByAltText', async function (browser) {
+    const image = await browser.getByAltText('Image Alt Text');
 
-    async 'getByAltText'(browser) {
-        const { getByAltText } = getQueriesFrom(browser);
-        const image = await getByAltText('Image Alt Text');
+    browser.click(image);
+    browser.expect.element(image).css('border').toEqual('5px solid rgb(255, 0, 0)')
+  });
 
-        browser.click(image);
-        browser.expect.element(image).to.have.css('border').which.equals('5px solid rgb(255, 0, 0)')
-    },
-    async 'getByTestId'(browser) {
-        const { getByTestId } = getQueriesFrom(browser);
-        browser.click(await getByTestId('image-with-random-alt-tag'))
-    },
+  it('getByTestId', async function (browser) {
+    browser.click(await browser.getByTestId('image-with-random-alt-tag'))
+  });
 
-    async 'getAllByText'(browser) {
-        const { getAllByText } = getQueriesFrom(browser);
-        const chans = await getAllByText('Jackie Chan', { exact: false })
+  it('getAllByText', async function (browser) {
+    const chans = await browser.getAllByText('Jackie Chan', {exact: false});
+    browser.expect(chans).to.have.length(2);
+  });
 
+  it('getAllByText - regex', async function (browser) {
+    const chans = await browser.getAllByText(/Jackie Chan/)
 
-        browser.expect.elements(chans).count.to.equal(2)
+    browser.expect(chans).to.have.length(2);
 
-    },
+    const firstChan = chans[0];
+    const secondChan = chans[1];
 
-    async 'getAllByText - regex'(browser) {
-        const { getAllByText } = getQueriesFrom(browser);
-        const chans = await getAllByText(/Jackie Chan/)
+    browser.expect.element(firstChan).text.toEqual('Jackie Chan 1');
 
+    browser.expect.element(secondChan).text.toEqual('Jackie Chan 2');
+    browser.click(chans[1]);
 
-        browser.expect.elements(chans).count.to.equal(2)
+    browser.expect.element(secondChan).text.toEqual('Jackie Kicked');
+    browser.click(chans[0]);
 
-        const firstChan = chans.nth(0);
-        const secondChan = chans.nth(1);
-        browser.expect.element(firstChan).text.to.equal('Jackie Chan 1');
+    browser.expect.element(firstChan).text.toEqual('Jackie Kicked');
+  });
 
-        browser.expect.element(secondChan).text.to.equal('Jackie Chan 2');
-        browser.click(chans.nth(1));
+  it('queryAllByText', async function (browser) {
+    const buttons = await browser.queryAllByText('Button Text');
+    const nonExistentButtons = await browser.queryAllByText('non existent button');
 
-        browser.expect.element(secondChan).text.to.equal('Jackie Kicked');
-        browser.click(chans.nth(0));
+    browser.expect(buttons).to.have.length(2);
+    browser.expect(nonExistentButtons).to.have.length(0);
+  });
 
-        browser.expect.element(firstChan).text.to.equal('Jackie Kicked');
+  it('still works after page navigation', async function (browser) {
+    const page2 = await browser.getByText('Go to Page 2');
 
-    },
+    browser.click(page2);
 
-    async 'queryAllByText'(browser) {
-        const { queryAllByText } = getQueriesFrom(browser);
+    browser.expect.element(await browser.getByText('second page')).to.be.present;
+  });
 
-        const buttons = await queryAllByText('Button Text');
-        const nonExistentButtons = await queryAllByText('non existent button');
-
-        browser.expect.elements(buttons).count.to.equal(2);
-        browser.assert.elementNotPresent(nonExistentButtons);
-
-
-    },
-
-    async 'still works after page navigation'(browser) {
-        const { getByText } = getQueriesFrom(browser);
-
-        const page2 = await getByText('Go to Page 2');
-
-        browser.click(page2);
-
-        browser.expect.element(await getByText('second page')).to.be.present;
-    },
-
-    async 'still works after refresh'(browser) {
-        const { getByText } = getQueriesFrom(browser);
-
-        browser.click(await getByText('Go to Page 2'));
-
-        browser.back();
-        browser.refresh();
-
-        browser.expect.element(await getByText('getByText')).to.be.present;
-    },
-
-
-
-
-};
+  it('still works after refresh', async function (browser) {
+    await browser.click(await browser.getByText('Go to Page 2'));
+    await browser.back().refresh();
+    await browser.expect.element(await browser.getByText('getByText')).to.be.present;
+  });
+});

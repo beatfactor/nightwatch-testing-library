@@ -6,31 +6,33 @@
   "typings": "typings",
   "scripts": {
     "add-contributor": "kcd-scripts contributors add",
-    "build": "kcd-scripts build",
-    "lint": "kcd-scripts lint",
-    "test:unit": "kcd-scripts test --no-watch --config=jest.config.js",
+    "build": "node nightwatch/build_commands.js",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint nightwatch tests",
     "test:nightwatch:serve": "serve --listen 13370 ./test-app",
-    "test:nightwatch:run": "nightwatch",
+    "test:nightwatch:run": "nightwatch --serial --headless",
     "validate": "kcd-scripts validate build,lint,test",
     "test:nightwatch": "npm-run-all --silent --parallel --race test:nightwatch:serve test:nightwatch:run",
     "test": "npm-run-all --parallel test:nightwatch",
     "semantic-release": "semantic-release"
   },
   "files": [
-    "dist",
-    "typings"
+    "index.js",
+    "nightwatch",
+    "README.md"
   ],
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "@babel/runtime": "^7.4.3",
     "@testing-library/dom": "^7.0.4",
-    "nightwatch": "^1.2.4",
     "simmerjs": "^0.5.6"
   },
   "devDependencies": {
-    "chromedriver": "^89.0.0",
+    "@babel/runtime": "^7.20.7",
+    "@nightwatch/apitesting": "^0.1.5",
+    "nightwatch": "2.6.1",
+    "chromedriver": "^107.0.3",
     "eslint": "^6.5.1",
     "kcd-scripts": "^5.0.0",
     "npm-run-all": "^4.1.5",

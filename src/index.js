@@ -1,4 +1,8 @@
-
+/**
+ * DEPRECATED – no longer used, left here for reference only
+ *
+ * This project is now published as a Nightwatch plugin and the TestingLibrary queries are now exported as Nightwatch commands
+ */
 const path = require('path');
 const fs = require('fs');
 const { queries: baseQueries } = require('@testing-library/dom');
@@ -102,5 +106,5 @@ const configure = (config) => {
     _config = config;
 }
 module.exports = {
-    configure, getQueriesFrom, within
+    configure, within
 }

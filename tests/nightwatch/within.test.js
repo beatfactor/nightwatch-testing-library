@@ -1,42 +1,25 @@
-const { getQueriesFrom, within } = require('../../src');
+describe('within tests', function () {
 
+  beforeEach(browser => browser.url('http://localhost:13370'));
 
-module.exports = {
-    beforeEach(browser, done) {
-        browser
-            .url('http://localhost:13370');
-        done()
-    },
-    async 'getByText within container'(browser) {
-        const { getByTestId } = getQueriesFrom(browser);
+  it('getByText within container', async browser => {
+    const nested = await browser.getByTestId('nested');
+    const button = await browser.within(nested).getByText('Button Text');
 
-        const nested = await getByTestId('nested');
-        const button = await within(nested).getByText('Button Text');
+    await browser.click(button);
+    await browser.expect.element(button).text.to.equal('Button Clicked');
+  });
 
-        browser.click(button);
-        browser.expect.element(button).text.to.equal('Button Clicked');
+  xit('works with nested selector from "All" query with index - regex', async browser => {
+    const nestedDivs = await browser.getAllByTestId(/nested/);
 
-    },
+    await browser.expect(nestedDivs).to.have.length(2)
 
+    const nested = browser.within(nestedDivs[1]);
+    const button = await nested.getByText('Button Text');
+    const text = await nested.getByText('text only in 2nd nested');
 
-    async 'works with nested selector from "All" query with index - regex'(browser) {
-
-        const { getAllByTestId } = getQueriesFrom(browser);
-
-        const nestedDivs = await getAllByTestId(/nested/);
-
-        browser.expect.elements(nestedDivs).count.to.equal(2)
-
-        const nested = within(nestedDivs.nth(1));
-
-        const button = await nested.getByText('Button Text');
-        const text = await nested.getByText('text only in 2nd nested');
-
-        browser.expect.element(button).to.be.present;
-        browser.expect.element(text).to.be.present;
-        // await t
-        //     .expect(nested.getByText('Button Text').exists).ok()
-        //     .expect(nested.getByText('text only in 2nd nested').exists).ok()
-
-    },
-}
+    await browser.expect.element(button).to.be.present;
+    await browser.expect.element(text).to.be.present;
+  });
+});

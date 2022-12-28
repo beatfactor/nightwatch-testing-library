@@ -1,36 +1,24 @@
-const { configure, getQueriesFrom } = require('../../src');
+describe('configure test', function () {
 
-module.exports = {
-    before() {
+  // eslint-disable-next-line
+  this.settings.testing_library = {
+    testIdAttribute: 'data-automation-id'
+  };
 
-        configure({ testIdAttribute: 'data-automation-id' });
+  beforeEach(browser => browser.url('http://localhost:13370'));
 
-    },
-    after() {
-        configure(null);
-    },
-    beforeEach(browser, done) {
-        browser
-            .url('http://localhost:13370');
-        done()
-    },
-    async 'supports alternative testIdAttribute'(browser) {
-        const { getByTestId } = getQueriesFrom(browser);
+  it('supports alternative testIdAttribute', async (browser) => {
+    const image = await browser.getByTestId('image-with-random-alt-tag');
+    browser.click(image);
+    browser.expect.element(image).to.have.css('border').which.equals('5px solid rgb(255, 0, 0)')
+  });
 
-        const image = await getByTestId('image-with-random-alt-tag');
-        browser.click(image);
-        browser.expect.element(image).to.have.css('border').which.equals('5px solid rgb(255, 0, 0)')
+  it('still works after navigation', async (browser) => {
+    browser.click(await browser.getByText('Go to Page 2'));
 
-    },
+    browser.click(await browser.getByTestId('page2-thing'));
 
-    async 'still works after navigation'(browser) {
-        const { getByTestId, getByText } = getQueriesFrom(browser);
+    browser.expect.element(await browser.getByText('second page')).to.be.present;
+  });
+});
 
-        browser.click(await getByText('Go to Page 2'));
-
-        browser.click(await getByTestId('page2-thing'));
-
-        browser.expect.element(await getByText('second page')).to.be.present;
-
-    }
-}
