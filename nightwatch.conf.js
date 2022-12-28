@@ -29,7 +29,7 @@ module.exports = {
   // plugins: [],
   
   // See https://nightwatchjs.org/guide/concepts/test-globals.html
-  globals_path: '',
+  globals_path: 'tests/globals.js',
 
   webdriver: {},
 
