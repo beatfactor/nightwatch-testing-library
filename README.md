@@ -42,7 +42,7 @@ Requires Nightwatch 2.6.0 or higher.
 Install the project from NPM with:
 
 ```sh
-npm i nightwatch @nightwatch/testing-library --save-dev
+npm i @nightwatch/testing-library --save-dev
 ```
 
 Edit your `nightwatch.json` (or `nightwatch.conf.js`) file and add the plugin to the list:
