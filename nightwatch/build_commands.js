@@ -157,7 +157,7 @@ module.exports = class ${queryName.replace(/^./, queryName[0].toUpperCase())} {
 
     return this.api.createElement(element);
   } 
-}`;
+};`;
 
   fs.writeFileSync(path.join(__dirname, 'commands', `${queryName}.js`), commandContent);
 });
