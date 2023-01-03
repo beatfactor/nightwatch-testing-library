@@ -36,6 +36,7 @@ module.exports = class FindByDisplayValue {
     const scriptFn = `function (queryName, args, container, done) {
       if (typeof window.TestingLibraryDom == 'undefined') {
         done({error: '__library__missing__'});
+        
         return;  
       }
       
@@ -49,6 +50,7 @@ module.exports = class FindByDisplayValue {
           } else {
             selector = window.Simmer(elms);
           }
+          
           return selector;
         };
         
@@ -56,6 +58,7 @@ module.exports = class FindByDisplayValue {
           if (arg.RegExp) {
             return eval(arg.RegExp);
           }
+          
           return arg;
         });
 
@@ -100,6 +103,7 @@ module.exports = class FindByDisplayValue {
       if (arg instanceof RegExp) {
         return {RegExp: arg.toString()};
       }
+      
       return arg;
     });
     
@@ -121,14 +125,14 @@ module.exports = class FindByDisplayValue {
     }
       
     if (element && element.error) {
-       let {message} = element.error;
-       message = message || element.error;
-       message = message.split('\n')[0];
-       const error = new Error(`Error while running ${queryName}: ${message}`);
-       error.name = 'TestingLibraryError';
-       error.link = 'https://testing-library.com/docs/dom-testing-library/api';
-       error.rejectPromise = true;
-       throw error;
+      let {message} = element.error;
+      message = message || element.error;
+      message = message.split('\n')[0];
+      const error = new Error(`Error while running ${queryName}: ${message}`);
+      error.name = 'TestingLibraryError';
+      error.link = 'https://testing-library.com/docs/dom-testing-library/api';
+      error.rejectPromise = true;
+      throw error;
     }
     
     if (element === null) {
@@ -143,4 +147,4 @@ module.exports = class FindByDisplayValue {
 
     return this.api.createElement(element);
   } 
-}
+};

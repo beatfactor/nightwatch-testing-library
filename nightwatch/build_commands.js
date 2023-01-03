@@ -1,19 +1,19 @@
 const path = require('path');
 const fs = require('fs');
 
-const { queries: baseQueries } = require('@testing-library/dom');
+const {queries: baseQueries} = require('@testing-library/dom');
 
 Object.keys(baseQueries).forEach(queryName => {
-  const errorHandling = "" +
-    " let {message} = element.error;\n" +
-    "       message = message || element.error;\n" +
-    "       message = message.split('\\n')[0];\n" +
+  const errorHandling = '' +
+    'let {message} = element.error;\n' +
+    '      message = message || element.error;\n' +
+    '      message = message.split(\'\\n\')[0];\n' +
     // eslint-disable-next-line
-    "       const error = new Error(`Error while running ${queryName}: ${message}`);\n" +
-    "       error.name = 'TestingLibraryError';\n" +
-    "       error.link = 'https://testing-library.com/docs/dom-testing-library/api';\n" +
-    "       error.rejectPromise = true;\n" +
-    "       throw error;"
+    "      const error = new Error(`Error while running ${queryName}: ${message}`);\n" +
+    '      error.name = \'TestingLibraryError\';\n' +
+    '      error.link = \'https://testing-library.com/docs/dom-testing-library/api\';\n' +
+    '      error.rejectPromise = true;\n' +
+    '      throw error;';
 
   const commandContent = `const path = require('path');
 const fs = require('fs');
@@ -53,6 +53,7 @@ module.exports = class ${queryName.replace(/^./, queryName[0].toUpperCase())} {
     const scriptFn = \`function (queryName, args, container, done) {
       if (typeof window.TestingLibraryDom == 'undefined') {
         done({error: '__library__missing__'});
+        
         return;  
       }
       
@@ -66,6 +67,7 @@ module.exports = class ${queryName.replace(/^./, queryName[0].toUpperCase())} {
           } else {
             selector = window.Simmer(elms);
           }
+          
           return selector;
         };
         
@@ -73,6 +75,7 @@ module.exports = class ${queryName.replace(/^./, queryName[0].toUpperCase())} {
           if (arg.RegExp) {
             return eval(arg.RegExp);
           }
+          
           return arg;
         });
 
@@ -117,6 +120,7 @@ module.exports = class ${queryName.replace(/^./, queryName[0].toUpperCase())} {
       if (arg instanceof RegExp) {
         return {RegExp: arg.toString()};
       }
+      
       return arg;
     });
     

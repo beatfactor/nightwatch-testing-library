@@ -13,7 +13,7 @@ describe('within tests', function () {
   it('works with nested selector from "All" query with index - regex', async browser => {
     const nestedDivs = await browser.getAllByTestId(/nested/);
 
-    await browser.expect(nestedDivs).to.have.length(2)
+    await browser.expect(nestedDivs).to.have.length(2);
 
     const nested = browser.within(nestedDivs[1]);
     const button = await nested.getByText('Button Text');

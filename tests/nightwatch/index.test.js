@@ -7,9 +7,9 @@ describe('queries tests', function() {
   it('Button click works', async function(browser) {
     const button = await browser.getByText('Unique Button Text');
 
-    await browser.expect.element(button).text.not.to.equal('Button Clicked')
+    await browser.expect.element(button).text.not.to.equal('Button Clicked');
     await browser.click(button);
-    await browser.expect.element(button).text.to.equal('Button Clicked')
+    await browser.expect.element(button).text.to.equal('Button Clicked');
   });
 
   it('getByPlaceholderText', async function (browser) {
@@ -57,11 +57,11 @@ describe('queries tests', function() {
     const image = await browser.getByAltText('Image Alt Text');
 
     browser.click(image);
-    browser.expect.element(image).css('border').toEqual('5px solid rgb(255, 0, 0)')
+    browser.expect.element(image).css('border').toEqual('5px solid rgb(255, 0, 0)');
   });
 
   it('getByTestId', async function (browser) {
-    browser.click(await browser.getByTestId('image-with-random-alt-tag'))
+    browser.click(await browser.getByTestId('image-with-random-alt-tag'));
   });
 
   it('getAllByText', async function (browser) {
@@ -70,7 +70,7 @@ describe('queries tests', function() {
   });
 
   it('getAllByText - regex', async function (browser) {
-    const chans = await browser.getAllByText(/Jackie Chan/)
+    const chans = await browser.getAllByText(/Jackie Chan/);
 
     browser.expect(chans).to.have.length(2);
 
