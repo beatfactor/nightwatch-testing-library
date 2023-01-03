@@ -59,6 +59,11 @@ Edit your `nightwatch.json` (or `nightwatch.conf.js`) file and add the plugin to
 
 Once the plugin is installed, you can use the `TestingLibrary` queries in your tests as regular Nightwatch commands.
 
+### About the queries
+- `getBy...`: returns the matching element and throw a descriptive error if no elements match or if more than one match is found (use `getAllBy` instead if more than one element is expected);
+- `queryBy...`: returns the matching element and return `null` if no elements match. This is useful for asserting an element that is not present. Throws an error if more than one match is found (use `queryAllBy` instead if this is OK);
+- `findBy...`: same as `getBy...` but will retry until a default timeout of `1000ms` is reached before throwing the error when no match is found. If you need to find more than one element, use `findAllBy`.
+
 The complete list of queries is available on the [DOM Testing Library documentation](https://testing-library.com/docs/queries/about).
 
 ### getByText

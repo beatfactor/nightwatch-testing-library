@@ -15,6 +15,7 @@ describe('queries tests', function() {
   it('getByPlaceholderText', async function (browser) {
 
     const input = await browser.getByPlaceholderText('Placeholder Text');
+
     await browser.expect.element(input).property('value').not.to.equal('Hello Placeholder');
 
     const webElement = await input.getWebElement();
@@ -31,6 +32,25 @@ describe('queries tests', function() {
     browser.sendKeys(input, 'Hello Input Labelled by Id');
 
     browser.expect.element(input).value.toEqual('Hello Input Labelled by Id');
+  });
+
+  it('findByLabelText', async function (browser) {
+    const input = await browser.findByLabelText('Label For Input Labelled By Id');
+    browser.sendKeys(input, 'Hello Input Labelled by Id');
+
+    browser.expect.element(input).value.toEqual('Hello Input Labelled by Id');
+  });
+
+  it('queryByLabelText', async function (browser) {
+    const input = await browser.queryByLabelText('Label For Input Labelled By Id');
+    browser.sendKeys(input, 'Hello Input Labelled by Id');
+
+    browser.expect.element(input).value.toEqual('Hello Input Labelled by Id');
+  });
+
+  it('queryByLabelText error', async function (browser) {
+    const input = await browser.queryByLabelText('non existent label');
+    browser.assert.strictEqual(input, null, 'input should be null');
   });
 
   it('getByAltText', async function (browser) {

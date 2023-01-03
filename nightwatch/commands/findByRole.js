@@ -33,12 +33,25 @@ module.exports = class FindByRole {
   }
   
   executeCommand(queryName, args, container) {
-    const scriptFn = `function (queryName, args, container) {
+    const scriptFn = `function (queryName, args, container, done) {
       if (typeof window.TestingLibraryDom == 'undefined') {
-        return {error: '__library__missing__'};  
+        done({error: '__library__missing__'});
+        return;  
       }
       
       try {
+        var makeSelector = function (elms) {
+          var selector;
+          if (/AllBy/.test(queryName)) {
+            selector = elms.map(function(elm) {
+              return window.Simmer(elm);
+            });
+          } else {
+            selector = window.Simmer(elms);
+          }
+          return selector;
+        };
+        
         args = args.map(function(arg) {
           if (arg.RegExp) {
             return eval(arg.RegExp);
@@ -50,21 +63,33 @@ module.exports = class FindByRole {
         args.unshift(root);
 
         var elms = window.TestingLibraryDom[queryName].apply(window.TestingLibraryDom, args);
-        var selector;
-        if (/AllBy/.test(queryName)) {
-          selector = elms.map(function(elm) {
-            return window.Simmer(elm);
+        if (elms instanceof Promise) {
+          elms = elms.then(function(elm) {
+            done(makeSelector(elm));
+          }).catch(function(e) {
+            done({error: { message: e.message, stack: e.stack }});
           });
-        } else {
-          selector = window.Simmer(elms);
+          
+          return;
         }
-        return selector;
+        
+        if (elms === null) {
+          if (/^queryAllBy/.test(queryName)) {
+            done([]);
+          } else {
+            done(null);
+          }
+          
+          return;
+        }
+        
+        done(makeSelector(elms));
       } catch (e) {
-        return { error: { message: e.message, stack: e.stack } };
+        done({error: { message: e.message, stack: e.stack }});
       }
     }`;
 
-    return this.driver.executeScript(`var passedArgs = Array.prototype.slice.call(arguments,0); return (${scriptFn.toString()}).apply(window, passedArgs);`, queryName, args, container);
+    return this.driver.executeAsyncScript(`var passedArgs = Array.prototype.slice.call(arguments,0); return (${scriptFn.toString()}).apply(window, passedArgs);`, queryName, args, container);
   }
   
   async command(...args) {
@@ -104,6 +129,10 @@ module.exports = class FindByRole {
        error.link = 'https://testing-library.com/docs/dom-testing-library/api';
        error.rejectPromise = true;
        throw error;
+    }
+    
+    if (element === null) {
+      return null;
     }
       
     if (Array.isArray(element)) {
