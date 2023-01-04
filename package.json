@@ -26,7 +26,7 @@
     "@nightwatch/apitesting": "^0.1.5",
     "chromedriver": "^107.0.3",
     "eslint": "^6.5.1",
-    "nightwatch": "2.6.1",
+    "nightwatch": "2.6.4",
     "serve": "^14.1.2",
     "wait-on": "^7.0.1"
   },

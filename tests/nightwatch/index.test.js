@@ -29,9 +29,9 @@ describe('queries tests', function() {
 
   it('getByLabelText', async function (browser) {
     const input = await browser.getByLabelText('Label For Input Labelled By Id');
-    browser.sendKeys(input, 'Hello Input Labelled by Id');
+    input.sendKeys('Hello Input Labelled by Id');
 
-    browser.expect.element(input).value.toEqual('Hello Input Labelled by Id');
+    expect(input).value.toEqual('Hello Input Labelled by Id');
   });
 
   it('findByLabelText', async function (browser) {

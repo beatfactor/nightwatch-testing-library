@@ -66,10 +66,30 @@ Once the plugin is installed, you can use the `TestingLibrary` queries in your t
 
 The complete list of queries is available on the [DOM Testing Library documentation](https://testing-library.com/docs/queries/about).
 
+### Returned values
+
+The individual queries return a Nightwatch [Element](https://nightwatchjs.org/api/element/#overview) object. In addition to the element methods available directly on the element, you can use this object directly with any Nightwatch command or assertion that accepts an element as a parameter.
+
+The `getAllBy`, `findAllBy`, `queryAllBy` queries return an array of Nightwatch [Element](https://nightwatchjs.org/api/element/#overview) objects.
+
+The following are equivalent:
+
+```js
+test('first example', async (browser) => {
+  const input = await browser.getByLabelText('Label For Input Labelled By Id');
+  await input.sendKeys('Hello Input Labelled by Id');
+});
+
+test('second example', async (browser) => {
+  const input = await browser.getByLabelText('Label For Input Labelled By Id');
+  await browser.sendKeys(input, 'Hello Input Labelled by Id');
+});
+```
+
 ### getByText
 
 ```js
-it('getByText example', async function(browser) {
+test('getByText example', async function(browser) {
   const button = await browser.getByText('Unique Button Text');
 
   browser.click(button);
@@ -80,7 +100,7 @@ it('getByText example', async function(browser) {
 ### getByPlaceholderText
 
 ```js
-it('getByPlaceholderText example', async function(browser) {
+test('getByPlaceholderText example', async function(browser) {
   const input = await browser.getByPlaceholderText('Placeholder Text');
 
   // Uses the User Actions API to type into the input
@@ -94,7 +114,7 @@ it('getByPlaceholderText example', async function(browser) {
 ### getByLabelText
     
 ```js
-it('getByLabelText example', async function(browser) {
+test('getByLabelText example', async function(browser) {
   const input = await browser.getByLabelText('Label For Input Labelled By Id');
   browser.sendKeys(input, 'Hello Input Labelled by Id');
 
@@ -105,7 +125,7 @@ it('getByLabelText example', async function(browser) {
 ### getByAltText
 
 ```js
-it('getByAltText example', async function(browser) {
+test('getByAltText example', async function(browser) {
   const image = await browser.getByAltText('Image Alt Text');
 
   browser.expect.element(image).to.be.present;
@@ -115,7 +135,7 @@ it('getByAltText example', async function(browser) {
 ### getByTestId
 
 ```js
-it('getByTestId example', async function(browser) {
+test('getByTestId example', async function(browser) {
   const button = await browser.getByTestId('unique-button-id');
 
   browser.click(button);
@@ -126,7 +146,7 @@ it('getByTestId example', async function(browser) {
 ### getAllByText
     
 ```js
-it('getAllByText example', async function(browser) {
+test('getAllByText example', async function(browser) {
   const chans = await browser.getAllByText('Jackie Chan', {exact: false});
   browser.expect(chans).to.have.length(2);
 });
@@ -135,7 +155,7 @@ it('getAllByText example', async function(browser) {
 ### getAllByText with regex
 
 ```js
-it('getAllByText with regex example', async function(browser) {
+test('getAllByText with regex example', async function(browser) {
   const chans = await browser.getAllByText(/Jackie Chan/)
   browser.expect(chans).to.have.length(2);
 });
@@ -144,7 +164,7 @@ it('getAllByText with regex example', async function(browser) {
 ### queryAllByText
 
 ```js
-it('queryAllByText', async function (browser) {
+test('queryAllByText', async function (browser) {
   const buttons = await browser.queryAllByText('Button Text');
   const nonExistentButtons = await browser.queryAllByText('non existent button');
 
@@ -156,7 +176,7 @@ it('queryAllByText', async function (browser) {
 ### using .within
 
 ```js
-it('getByText within container', async browser => {
+test('getByText within container', async browser => {
   const nested = await browser.getByTestId('nested');
   const button = await browser.within(nested).getByText('Button Text');
 
@@ -166,7 +186,7 @@ it('getByText within container', async browser => {
 ```
 
 ```js
-it('using nested selector from "All" query with index - regex', async browser => {
+test('using nested selector from "All" query with index - regex', async browser => {
   const nestedDivs = await browser.getAllByTestId(/nested/);
 
   await browser.expect(nestedDivs).to.have.length(2)
@@ -205,7 +225,7 @@ describe('configure test', function () {
 
   beforeEach(browser => browser.url('http://localhost:13370'));
 
-  it('supports alternative test Id attribute', async (browser) => {
+  test('supports alternative test Id attribute', async (browser) => {
     const image = await browser.getByTestId('image-with-random-alt-tag');
     browser.click(image);
     browser.expect.element(image).to.have.css('border').which.equals('5px solid rgb(255, 0, 0)')
