@@ -1,5 +1,10 @@
 # @nightwatch/testing-library
 
+<p align=center>
+  <img alt="Nightwatch.js Logo" src=".github/assets/nightwatch-logo.png" width=200 />
+  <img alt="Vue Logo" src=".github/assets/tllogo-large.png" width=200 />
+</p>
+
 Using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro) in Nightwatch has never been easier with the official Nightwatch plugin.
 
 Requires Nightwatch 2.6.0 or higher.
@@ -21,11 +26,6 @@ Requires Nightwatch 2.6.0 or higher.
 [![Star on GitHub][github-star-badge]][github-star]
 [![Tweet][twitter-badge]][twitter]
 
-<div align="center">
-<a href="https://testingjavascript.com">
-<img width="500" alt="TestingJavaScript.com Learn the smart, efficient way to test any JavaScript application." src="https://raw.githubusercontent.com/kentcdodds/cypress-testing-library/main/other/testingjavascript.jpg" />
-</a>
-</div>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
