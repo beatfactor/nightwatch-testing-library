@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@nightwatch/apitesting": "^0.1.5",
-    "chromedriver": "^107.0.3",
+    "chromedriver": "^108.0.0",
     "eslint": "^6.5.1",
     "nightwatch": "2.6.4",
     "serve": "^14.1.2",
